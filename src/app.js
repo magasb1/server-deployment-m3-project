@@ -4,6 +4,8 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const logger = require('morgan');
 const path = require('node:path');
+const { auth } = require('express-openid-connect');
+const { config: authConfig } = require('./lib/auth');
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
@@ -15,6 +17,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(fileUpload());
+
+// auth & security
+app.disable('x-powered-by');
+app.use(auth(authConfig));
+app.use((req, res, next) => {
+    res.user = req.oidc.user;
+    next();
+});
 
 // static files
 app.use(express.static(path.join('node_modules', 'bootstrap', 'dist')));
