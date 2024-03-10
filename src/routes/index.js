@@ -74,10 +74,16 @@ router.get('/upload/:userId/:name', async (req, res) => {
     return res.redirect('/');
 });
 
-router.delete('/upload/:userId/:name', requiresAuth(), async (req, res) => {
-    const { id, userId } = req.params;
-    const key = `${userId}/${id}`;
-    const response = await deleteFileS3(key, req.user.nickname);
+router.delete('/upload', requiresAuth(), async (req, res) => {
+    const { key } = req.body;
+    if (!key) {
+        return res.status(400).json({ message: 'No key provided' });
+    }
+    if (key.split('/')[0] !== req.user.nickname) {
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const response = await deleteFileS3(key);
     console.log(response)
     res.status(200).json({ message: 'File deleted' });
 });
