@@ -5,9 +5,9 @@
     <%- include('partials/header.ejs', { user })  %>
     <main class="container my-5">
         <h1>Pictures</h1>
-        <div class="d-flex w-full align-items-end justify-content-around">
+        <div class="row w-full align-items-end justify-content-start">
             <% files.forEach((file) => { %>
-                <div class="text-center d-flex flex-column">
+                <div class="text-center col-3 mb-3 d-flex flex-column">
                     <img class="mb-3 img-fluid" src="<%=file.src%>" style="max-width:250px">
                     <a href="upload/<%=file.name%>"><%=file.name%></a>
                 </div>
