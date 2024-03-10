@@ -1,4 +1,4 @@
-# Server Deploment - Module 3 - Project
+# Server Deploymeny - Module 3 - Project
 
 Simple application for uploading files to S3. 
 
