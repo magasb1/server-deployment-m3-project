@@ -27,24 +27,27 @@ module.exports = {
           .filter(file => !file.name.startsWith('.'))
           .map(file => file.name);
     },
-    saveFileS3: async (file) => {
+    saveFileS3: async (file, user = null) => {
         const { name, data } = file;
         const params = {
             Bucket: process.env.CYCLIC_BUCKET_NAME,
-            Key: name,
+            Key: user ? `${user}/${name}` : name,
             Body: data,
         };
         const command = new PutObjectCommand(params);
         const response = await s3.send(command);
         return response;
     },
-    getFilesS3: async () => {
+    getFilesS3: async (user = null) => {
         const params = {
             Bucket: process.env.CYCLIC_BUCKET_NAME,
+            Prefix: user ? `${user}/` : '',
         };
         const response = await s3.send(new ListObjectsCommand(params));
-        const files = response.Contents
-          .filter(file => !file.Key.startsWith('.') && !file.Key.endsWith('.zip'))
+        const files = response.Contents?.length > 0 
+            ? response.Contents.filter(file => !file.Key.startsWith('.') && !file.Key.endsWith('.zip'))
+            : [];
+          
 
         const data = await Promise.all(files.map(async (file) => {
             const params = {
@@ -72,7 +75,7 @@ module.exports = {
         
         return data;
     },
-    getFileS3: async (key) => {
+    getFileS3: async (key, user = null) => {
         const params = {
             Bucket: process.env.CYCLIC_BUCKET_NAME,
             Key: key,

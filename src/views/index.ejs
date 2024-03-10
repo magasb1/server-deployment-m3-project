@@ -9,7 +9,7 @@
             <% files.forEach((file) => { %>
                 <div class="text-center col-3 mb-3 d-flex flex-column">
                     <img class="mb-3 img-fluid" src="<%=file.src%>" style="max-width:250px">
-                    <a href="upload/<%=file.name%>"><%=file.name%></a>
+                    <a class="d-flex w-full ml-auto" href="upload/<%=file.name%>"><%=file.name%></a>
                 </div>
             <% });%>
         </div>
