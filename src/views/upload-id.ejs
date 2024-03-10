@@ -4,7 +4,10 @@
 <body class="" data-bs-theme="dark">
     <%- include('partials/header.ejs', { user })  %>
     <main class="container my-5">
-        <h1><%= file.name %></h1>
+        <div class="d-flex w-full justify-content-between align-content-center mb-5">
+            <h1><%= file.name %></h1>
+            <button class="btn btn-danger ml-auto" id="upload" onClick="deleteById('<%= file.name %>')">Delete</button>
+        </div>
         <div class="text-center">
             <img class="mb-3 img-fluid" src="<%= file.src %>" style="max-width:500px">
         </div>

@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { saveFileS3, getFilesS3, getFileS3 } = require('../lib/utils');
+const { saveFileS3, getFilesS3, getFileS3, emptyS3BucketByPrefix, deleteFileS3 } = require('../lib/utils');
 const { requiresAuth } = require('express-openid-connect');
 
 const router = Router();
@@ -16,6 +16,13 @@ router.get('/', async (req, res) => {
 router.get('/upload', requiresAuth(), (req, res) => {
     res.render('upload', { 
         title: 'Upload',
+        user: req.user ,
+    });
+});
+
+router.get('/Settings', requiresAuth(), (req, res) => {
+    res.render('settings', { 
+        title: 'Settings',
         user: req.user ,
     });
 });
@@ -47,12 +54,13 @@ router.get('/upload/:key', async (req, res) => {
     return res.redirect('/');
 });
 
-router.get('/upload/:userId/:key', async (req, res) => {
-    const { key, userId } = req.params;
-
+router.get('/upload/:userId/:name', async (req, res) => {
+    const { name, userId } = req.params;
+    
     if (userId !== req.user?.nickname) {
         return res.redirect('/');
     }
+    const key = `${userId}/${name}`;
 
     const file = await getFileS3(key, req.user?.nickname ?? null);
     if (file) {
@@ -63,6 +71,20 @@ router.get('/upload/:userId/:key', async (req, res) => {
         });
     }
     return res.redirect('/');
+});
+
+router.delete('/upload/:userId/:name', requiresAuth(), async (req, res) => {
+    const { id, userId } = req.params;
+    const key = `${userId}/${id}`;
+    const response = await deleteFileS3(key, req.user.nickname);
+    console.log(response)
+    res.status(200).json({ message: 'File deleted' });
+});
+
+router.delete('/empty-bucket', requiresAuth(), async (req, res) => {
+    const { nickname } = req.user;
+    await emptyS3BucketByPrefix(nickname)
+    res.status(200).json({ message: 'Bucket emptied' });
 });
 
 router.use((req, res, next) => {

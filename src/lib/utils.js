@@ -1,6 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
-const { S3Client, PutObjectCommand, ListObjectsCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, ListObjectsCommand, GetObjectCommand, DeleteObjectsCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 const s3 = new S3Client({ 
     region: process.env.AWS_REGION,
@@ -97,5 +97,48 @@ module.exports = {
             name: key,
             src: `data:image/jpeg;base64,${data.toString('base64')}`,
         };
+    },
+    deleteFileS3: async (key) => {
+        const params = {
+            Bucket: process.env.CYCLIC_BUCKET_NAME,
+            Key: key,
+        };
+        const response = await s3.send(new DeleteObjectCommand(params));
+        return response;
+    },
+    emptyS3BucketByPrefix: async (prefix) => {
+        const params = {
+            Bucket: process.env.CYCLIC_BUCKET_NAME,
+            Prefix: prefix,
+        };
+        const response = await s3.send(new ListObjectsCommand(params));
+        const files = response.Contents?.length > 0 
+            ? response.Contents.filter(file => !file.Key.startsWith('.'))
+            : [];
+        const deleteParams = {
+            Bucket: process.env.CYCLIC_BUCKET_NAME,
+            Delete: {
+                Objects: files.map(file => ({ Key: file.Key })),
+            },
+        };
+        const deleteResponse = await s3.send(new DeleteObjectsCommand(deleteParams));
+        return deleteResponse;
+    },
+    emptyS3Bucket: async () => {
+        const params = {
+            Bucket: process.env.CYCLIC_BUCKET_NAME,
+        };
+        const response = await s3.send(new ListObjectsCommand(params));
+        const files = response.Contents?.length > 0 
+            ? response.Contents.filter(file => !file.Key.startsWith('.'))
+            : [];
+        const deleteParams = {
+            Bucket: process.env.CYCLIC_BUCKET_NAME,
+            Delete: {
+                Objects: files.map(file => ({ Key: file.Key })),
+            },
+        };
+        const deleteResponse = await s3.send(new DeleteObjectsCommand(deleteParams));
+        return deleteResponse;
     },
 }
