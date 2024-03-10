@@ -29,10 +29,11 @@ router.get('/Settings', requiresAuth(), (req, res) => {
 
 router.post('/upload', requiresAuth(), async (req, res) => {
     const { file } = req.files;
+    const { nickname } = req.user;
     if (file){
         try {
-            await saveFileS3(file, req.user.nickname);
-            return res.status(201).json({ message: 'File uploaded', path: `upload/${file.name}` });
+            await saveFileS3(file, nickname);
+            return res.status(201).json({ message: 'File uploaded', path: `upload/${nickname}/${file.name}` });
         } catch (error) {
             return res.status(500).json({ message: 'Error uploading file' });
         }
