@@ -31,8 +31,6 @@ app.use((req, res, next) => {
     } catch (error) {
         req.user = null;
     }
-    console.log(req.oidc.user)
-    console.log(req.user)
     next();
 });
 
@@ -46,11 +44,6 @@ app.set('view engine', 'ejs');
 
 // routes
 app.use('/', require('./routes/index'));
-
-// 404 / error handler
-app.use((req, res, next) => {
-    res.status(404).send('404 Not Found');
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
