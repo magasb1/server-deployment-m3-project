@@ -22,9 +22,17 @@ app.use(fileUpload());
 app.disable('x-powered-by');
 app.use(auth(authConfig));
 app.use((req, res, next) => {
-    req.oidc.user 
-      ? res.user = req.oidc.user
-      : req.user = null;
+    try {
+        if (req.oidc.user) {
+            req.user = req.oidc.user
+        } else {
+            req.user = null;
+        }
+    } catch (error) {
+        req.user = null;
+    }
+    console.log(req.oidc.user)
+    console.log(req.user)
     next();
 });
 
