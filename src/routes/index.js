@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const files = await getFilesS3();
     res.render('index', { 
         title: 'Home',
-        user: req.user ?? null,
+        user: req.user,
         files: req.user ? files : files.slice(0, 3),
     });
 });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 router.get('/upload', requiresAuth(), (req, res) => {
     res.render('upload', { 
         title: 'Upload',
-        user: req.user ?? null,
+        user: req.user ,
     });
 });
 
@@ -39,7 +39,7 @@ router.get('/upload/:key', async (req, res) => {
     if (file) {
         return res.render('upload-id', { 
             title: key,
-            user: req.user ?? null,
+            user: req.user,
             file,
         });
     }
