@@ -10,6 +10,7 @@ function uploadFile(event) {
     .then(response => response.json())
     .then(data => {
         console.log(data)
+        location.replace(data.path)
     })
     .catch(error => {
         console.error(error)

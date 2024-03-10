@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { title }) %>
+<body class="" data-bs-theme="dark">
+    <%- include('partials/header.ejs', { user })  %>
+    <main class="container my-5">
+        <h1><%= file.name %></h1>
+        <div class="text-center">
+            <img class="mb-3 img-fluid" src="<%= file.src %>" style="max-width:500px">
+        </div>
+    </main>
+</body>
+</html>

@@ -5,12 +5,19 @@
     <%- include('partials/header.ejs', { user })  %>
     <main class="container my-5">
         <h1>Pictures</h1>
-        <% files.forEach((file) => { %>
-            <div class="text-center">
-              <img class="mb-3 img-fluid" src="/uploads/<%=file%>" style="max-width:250px">
-              <p><%=file%></p>
-            </div>
-        <% });%>
+        <div class="d-flex w-full align-items-end justify-content-around">
+            <% files.forEach((file) => { %>
+                <div class="text-center d-flex flex-column">
+                    <img class="mb-3 img-fluid" src="<%=file.src%>" style="max-width:250px">
+                    <a href="upload/<%=file.name%>"><%=file.name%></a>
+                </div>
+            <% });%>
+        </div>
+        <!-- 
+        <pre>
+            <%- JSON.stringify(files, null, 2) %>
+        </pre> 
+        -->
     </main>
 </body>
 </html>
