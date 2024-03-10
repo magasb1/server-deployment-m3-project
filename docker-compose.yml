@@ -4,6 +4,16 @@ volumes:
   minio:
 
 services:
+
+  app:
+    build: .
+    container_name: m3-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    
   minio:
     image: bitname/minio:latest
     container_name: m3-minio
