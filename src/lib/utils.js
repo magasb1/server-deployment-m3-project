@@ -98,10 +98,10 @@ module.exports = {
             src: `data:image/jpeg;base64,${data.toString('base64')}`,
         };
     },
-    deleteFileS3: async (key) => {
+    deleteFileS3: async (key, prefix) => {
         const params = {
             Bucket: process.env.CYCLIC_BUCKET_NAME,
-            Key: key,
+            Key: `${prefix}/${key}`,
         };
         const response = await s3.send(new DeleteObjectCommand(params));
         return response;

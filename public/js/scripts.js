@@ -34,13 +34,13 @@ function clearBucket() {
     })
 }
 
-function deleteById(key) {
+function deleteById(id) {
     const confirm = window.confirm('Are you sure you want to delete this file?')
     if (!confirm) return
 
-    fetch(`/upload`, {
+    const [prefix, key] = id.split('/')
+    fetch(`/upload/${prefix}/${key}`, {
         method: 'DELETE',
-        body: JSON.stringify({ key }),
     })
     .then(response => response.json())
     .then(data => {
