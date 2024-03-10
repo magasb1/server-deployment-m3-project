@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { saveFileS3, getFilesS3, getFileS3 } = require('../lib/utils');
+const { requiresAuth } = require('express-openid-connect');
 
 const router = Router();
 
@@ -12,14 +13,14 @@ router.get('/', async (req, res) => {
     });
 });
 
-router.get('/upload', (req, res) => {
+router.get('/upload', requiresAuth(), (req, res) => {
     res.render('upload', { 
         title: 'Upload',
         user: req.user ?? null,
     });
 });
 
-router.post('/upload', async (req, res) => {
+router.post('/upload', requiresAuth(), async (req, res) => {
     const { file } = req.files;
     if (file){
         try {
